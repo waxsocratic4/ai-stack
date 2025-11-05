@@ -328,36 +328,6 @@ services:
       timeout: 10s
       retries: 10
 
-  searxng:
-    container_name: searxng
-    image: docker.io/searxng/searxng:latest
-    restart: unless-stopped
-    expose:
-      - 8081:8080/tcp
-    volumes:
-      - ./searxng:/etc/searxng:rw
-    environment:
-      - SEARXNG_BASE_URL=https://${SEARXNG_HOSTNAME:-localhost}/
-      - UWSGI_WORKERS=${SEARXNG_UWSGI_WORKERS:-4}
-      - UWSGI_THREADS=${SEARXNG_UWSGI_THREADS:-4}
-      - SEARXNG_PORT=8081
-      - SEARXNG_BIND_ADDRESS=0.0.0.0
-      - SEARXNG_IMAGE_PROXY=true
-      - SEARXNG_STATIC_USE_HASH=true
-      - SEARXNG_LIMITER=false
-      - SEARXNG_PUBLIC_INSTANCE=false
-    cap_drop:
-      - ALL
-    cap_add:
-      - CHOWN
-      - SETGID
-      - SETUID
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "1"
-
   ollama-cpu:
     profiles: ["cpu"]
     <<: *service-ollama

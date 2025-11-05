@@ -49,10 +49,6 @@ services:
     ports:
       - 127.0.0.1:6379:6379
 
-  searxng:
-    ports:
-      - 0.0.0.0:8081:8080
-
   ollama-cpu:
     ports:
       - 0.0.0.0:11434:11434
