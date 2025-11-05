@@ -158,6 +158,7 @@ services:
       - tsdproxy.enable=true
       - tsdproxy.name=neo4j
       - tsdproxy.ephemeral=false
+      - tsdproxy.container_port=7474
 
   langfuse-worker:
     image: langfuse/langfuse-worker:3
