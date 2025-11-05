@@ -333,15 +333,20 @@ services:
     image: docker.io/searxng/searxng:latest
     restart: unless-stopped
     expose:
-      - 8080/tcp
+      - 8081:8080/tcp
     volumes:
       - ./searxng:/etc/searxng:rw
     environment:
       - SEARXNG_BASE_URL=https://${SEARXNG_HOSTNAME:-localhost}/
       - UWSGI_WORKERS=${SEARXNG_UWSGI_WORKERS:-4}
       - UWSGI_THREADS=${SEARXNG_UWSGI_THREADS:-4}
-    cap_drop:
-      - ALL
+      - SEARXNG_PORT=8081
+      - SEARXNG_BIND_ADDRESS=0.0.0.0
+      - SEARXNG_IMAGE_PROXY=true
+      - SEARXNG_STATIC_USE_HASH=true
+      - SEARXNG_LIMITER=false
+    #cap_drop:
+      #- ALL
     cap_add:
       - CHOWN
       - SETGID
