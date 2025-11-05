@@ -345,8 +345,8 @@ services:
       - SEARXNG_IMAGE_PROXY=true
       - SEARXNG_STATIC_USE_HASH=true
       - SEARXNG_LIMITER=false
-    #cap_drop:
-      #- ALL
+    cap_drop:
+      - ALL
     cap_add:
       - CHOWN
       - SETGID
