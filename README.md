@@ -69,7 +69,7 @@ Before you begin, make sure you have the following software installed:
 Clone the repository and navigate to the project directory:
 ```bash
 git clone -b stable https://github.com/waxsocratic4/ai-stack.git
-cd local-ai-packaged
+cd ai-stack
 ```
 
 Before running the services, you need to set up your environment variables for Supabase following their [self-hosting guide](https://supabase.com/docs/guides/self-hosting/docker#securing-your-services).
