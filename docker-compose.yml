@@ -41,7 +41,7 @@ x-ollama: &service-ollama
     - OLLAMA_HOST=0.0.0.0
     - OLLAMA_KV_CACHE_TYPE=q8_0
     - OLLAMA_DYNAMIC_CONTEXT=true
-    - OLLAMA_KEEP_ALIVE=20m
+    - OLLAMA_KEEP_ALIVE=10m
     - OLLAMA_NEW_ENGINE=true
     - OLLAMA_NUM_THREADS=8
     - HSA_OVERRIDE_GFX_VERSION=11.0.2
@@ -95,6 +95,21 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - open-webui:/app/backend/data
+    environment:
+      - ENABLE_OLLAMA_API=true
+      - SCARF_NO_ANALYTICS=true
+      - DO_NOT_TRACK=true
+      - ANONYMIZED_TELEMETRY=false
+      - WEBUI_URL=https://open-webui.mule-eagle.ts.net
+      - OLLAMA_BASE_URLS=http://ollama:11434;http://bert.mule-eagle.ts.net:11434
+      - GLOBAL_LOG_LEVEL=WARNING
+      - PIP_OPTIONS=--upgrade
+      - DATABASE_ENABLE_SQLITE_WAL=true
+      - ENABLE_WEBSOCKET_SUPPORT=true
+      - WEBSOCKET_MANAGER=redis
+      - WEBSOCKET_REDIS_URL=redis://redis:6379/1
+      - REDIS_KEY_PREFIX=open-webui
+      - REDIS_URL=redis://redis:6379/0
     labels:
       - tsdproxy.enable=true
       - tsdproxy.name=open-webui
@@ -327,6 +342,34 @@ services:
       interval: 3s
       timeout: 10s
       retries: 10
+
+  searxng:
+    container_name: searxng
+    image: docker.io/searxng/searxng:latest
+    restart: unless-stopped
+    expose:
+      - 8080/tcp
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    environment:
+      - SEARXNG_BASE_URL=https://${SEARXNG_HOSTNAME:-localhost}/
+      - UWSGI_WORKERS=${SEARXNG_UWSGI_WORKERS:-4}
+      - UWSGI_THREADS=${SEARXNG_UWSGI_THREADS:-4}
+      - SEARXNG_BIND_ADDRESS=0.0.0.0
+      - SEARXNG_LIMITER=false
+      - SEARXNG_IMAGE_PROXY=true
+      - SEARXNG_STATIC_USE_HASH=true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
 
   ollama-cpu:
     profiles: ["cpu"]
